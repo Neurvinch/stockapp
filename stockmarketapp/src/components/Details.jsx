@@ -1,7 +1,7 @@
 import React from 'react'
 import Cards from './Cards';
 
-const Details = () => {
+const Details = ({details}) => {
 
     const detailsList ={
         name : "name",
@@ -20,13 +20,13 @@ const Details = () => {
   return (
     <Cards>
         <ul>
-            { object.keys(detailsList).map( (item) =>(
-                <Li>
+            { Object.keys(detailsList).map( (item) =>(
+                <li key={item} >
                     <span>{detailsList[item]}</span>
                     <span> {item == "marketCaptilization" ?
-                      ` ${convertMillionstoBillions(Details[item]) }` : Details[item]}</span>
+                      ` ${convertMillionstoBillions(details[item]) }` : details[item]}</span>
 
-                </Li>
+                </li>
             ))}
         </ul>
     </Cards>
