@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { MoonIcon} from "@heroicons/react/24/solid"
 import ThemeContext from './ThemeContext'
 const ThemeIcon = () => {
-  const[darkMode,setDarkMode] =useContext(ThemeContext)
+  const{darkMode,setDarkMode} =useContext(ThemeContext)
 
   const toggleDarkMode =() =>{
     setDarkMode(!darkMode)
@@ -15,7 +15,7 @@ const ThemeIcon = () => {
           ${ darkMode ? "shadow-gray-800 ": "null" } `}>
             <MoonIcon className={`h-8 w-8 cursor-pointer stroke-1 ${
 
-              darkmode? "fill-yellow-400 stroke-yellow-400"
+              darkMode? "fill-yellow-400 stroke-yellow-400"
               : "fill-none stroke-neutral-400"
             }  `}/>
         

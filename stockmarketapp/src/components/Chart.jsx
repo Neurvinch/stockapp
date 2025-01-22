@@ -1,83 +1,64 @@
-import { useState,useEffect,useContext } from "react"
-import ThemeContext from "../components/ThemeContext"
-import StockContext from "../components/StockContext"
-import Cards from "./Cards"
-import{AreaChart, XAxis,YAxis,Tooltip, ResponsiveContainer, Area} from "recharts"
-import { converUnixTimeSatmpToDate } from "../helper/dataHelper"
-import ChartFilter from "./ChartFilter"
+import {useContext, useState}from 'react'
+import {mockHistoricalData} from "../constants/mock"
+import { converUnixTimeSatmpToDate } from '../helper/dataHelper';
+import Cards from "../components/Cards"
+import { AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis ,Area} from "recharts";
+import { chartConfig} from "../constants/config"
+import ChartFilter from "../components/ChartFilter";
+import ThemeContext from './ThemeContext';
 
 const Chart = () => {
-    const[filter,setFilter] = useState("1W")
+    
+    const [data,setData] = useState(mockHistoricalData);
+    const [filter, setfilter] = useState("1W")
     const {darkMode} = useContext(ThemeContext)
-    const {stockSymbol} = useContext(StockContext);
 
-    const [data,setData] =useState([])
-
-    const formatData = ( data) =>{
-        return data.c.map( (item,i) =>(
-            { value: item.toFixed(2),
-                data : converUnixTimeSatmpToDate(data.t[i])
+    const formatData = () =>{
+        return data.c.map ( (item , i) =>(
+          {
+                      value: item.toFixed(2),
+                      data : converUnixTimeSatmpToDate(data.t[i]),
             }
         ))
-
-    }
-
-    useEffect( () =>{
-        const updateData = async ()=>{
-
-            const { startTimeSatmpUnix,  endTimeStampUnix } = getDataRange();
-
-            const response = await fetchHistoricalData(
-                stockSymbol,
-                startTimeSatmpUnix,
-                endTimeStampUnix,
-                resolution  
-            );
-
-            setData(formatData(result))
-            
-        } 
-        updateData()
-    },[stockSymbol, filter])
+         } 
+         console.log(chartConfig)  
   return (
-    
-    <Cards>
-        <ul className="filters">
-            { ojects.keys(chartConfig).map(  (item) =>(
+     <Cards>
+        <ul className='flex  absolute top -2 right-2 -z-40'>
+            {Object.keys( chartConfig).map( (item) =>(
                 <li key={item}>
-                    <ChartFilter
-                    text={item}
-                    active={filter === item}
-                    onclick={ () =>{ setFilter(item)}}
-                    />
-
+                     <ChartFilter  text = {item} active={filter === item}
+                     onclick={() => setfilter(item)} />
                 </li>
-            )    )}
-        </ul>
+            ))}
 
+        </ul>
         <ResponsiveContainer>
-            <AreaChart>
-                <defs>
-                    <linearGradient id="chartColor" x1="0" y1="0" x2="0" y2="1">
-                        <stop
-                           offset="5%"
-                           stopColor={darkMode? "#312e82" : "rgb( 199 210 254)"}
-                        />
-                        <stop offset="95%" stopColor={darkMode? "#312e82" : " rgb( 199 210 254)"} />
-                    </linearGradient>
-                </defs>
-                <Tooltip/>
-                <Area
-                  type= "monotone"
-                  dataKey="value"
-                  stroke = "#312e82"
-                  fill="url(#chartColor)"
-                />
-                <XAxis dataKey="date" />
-                <YAxis/>
+            <AreaChart data={formatData(data)}>
+            <defs>
+    <linearGradient id="chartcolor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="5%" stopColor={darkMode ? "#312E81" : "rgb( 199, 210, 251 )"} stopOpacity={0.8}/>
+      <stop offset="95%" stopColor={darkMode ? "#312E81" : "rgb( 199, 210, 251 )"}stopOpacity={0}/>
+    </linearGradient>
+    
+  </defs>
+               <Area
+                 type="monotone"
+                 dataKey = 'value'
+                 stroke = '#8884d8'
+                 fillOpacity = {1}
+                 strokeWidth = {2}
+                 fill='url(#chartcolor)'
+               />
+               <Tooltip contentStyle={ darkMode ?{ backgroundColor: "#111827"} : null}
+                 itemStyle={ darkMode ?{ color: "#818cf8"} : null}
+                 />
+               <XAxis dataKey={"date"} />
+               <YAxis  domain={["dataMin", "dataMax"]}/>
             </AreaChart>
         </ResponsiveContainer>
-    </Cards>
+
+     </Cards>
   )
 }
 
