@@ -10,7 +10,7 @@ import StockContext from './components/StockContext';
 
 function App() {
 const [darkMode, setDarkMode] = useState(false);
-const[stockSymbol, setStockSymbol] = useState("AL");
+const[stockSymbol, setStockSymbol] = useState("MSFT");
 
   return (
     <>

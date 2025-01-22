@@ -17,8 +17,8 @@ const updateBestMatches = async  () =>{
 
     if(input){
       const SearchResults = await searchSymbols(input)
- const resuls = SearchResults.result
- setBestResults(resuls)
+ const results = SearchResults.result
+ setBestResults(results)
     }
   } catch (error) {
     setBestResults([])

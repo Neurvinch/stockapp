@@ -1,4 +1,4 @@
-import React from 'react'
+
 
 const ChartFilter = ({ text, active , onclick}) => {
   return (
