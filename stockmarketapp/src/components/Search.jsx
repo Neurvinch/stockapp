@@ -35,6 +35,7 @@ const updateBestMatches = async  () =>{
        onChange={ (e) =>{
         setInput(e.target.value)
        }}
+       
        className={`w-full focus:outline-none  rounded-md px-4 py-2   ${darkMode ? "bg-gray-900" : null} `}
        onKeyDown={ (e) =>{
         if(e.key == 'Enter'){
@@ -44,19 +45,21 @@ const updateBestMatches = async  () =>{
        
        />
 
-       <button 
+       {input && (   <button 
        onClick={clear}
        className='fill-gray-200 h-4 w-4  mr-10'
        >
         Clear
        </button>
+       )}
+
        <button onClick={updateBestMatches}
         className='fill-gray-200 h-4 w-4 mr-9'
        >
         Search 
        </button>
 
-       {input && bestResults.length > 0 ?( <SearchResults result ={bestResults}/> ): null}
+       {input && bestResults.length > 0 ? ( <SearchResults result ={bestResults}/> ): null}
     </div>
   )
 }

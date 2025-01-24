@@ -1,22 +1,21 @@
-import {useContext, useState,useEffect}from 'react'
+import {useContext, useState}from 'react'
 import {mockHistoricalData} from "../constants/mock"
-import { convertDateToUnixTimeStamp, converUnixTimeSatmpToDate, createDate } from '../helper/dataHelper';
+
 import Cards from "../components/Cards"
 import { AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis ,Area} from "recharts";
 import { chartConfig} from "../constants/config"
 import ChartFilter from "../components/ChartFilter";
 import ThemeContext from './ThemeContext';
-import StockContext from './StockContext';
-import { fetchHistoricalData } from '../api/stock-api';
+import { converUnixTimeSatmpToDate } from '../helper/dataHelper';
+
 
 const Chart = () => {
-  const {stockSymbol} = useContext(StockContext);
     
-    const [data,setData] = useState([]);
+    const [data,setData] = useState(mockHistoricalData);
     const [filter, setfilter] = useState("1W")
     const {darkMode} = useContext(ThemeContext)
 
-    const formatData = (data) =>(
+    const formatData = () =>(
         data.c.map( (item , i) =>(
           {
                       value: item.toFixed(2),
@@ -25,33 +24,33 @@ const Chart = () => {
         ))
       )
      
-         useEffect ( () =>{
-          const getRange  =() =>{
-           const {days , weeks , months , years} = chartConfig[filter] ;
+        //  useEffect ( () =>{
+        //   const getRange  =() =>{
+        //    const {days , weeks , months , years} = chartConfig[filter] ;
 
-           const endDate = new Date();
-           const startDate = createDate( endDate, -days, -weeks, -months, -years);
+        //    const endDate = new Date();
+        //    const startDate = createDate( endDate, -days, -weeks, -months, -years);
 
-           const startTimeStampUnix = convertDateToUnixTimeStamp(startDate);
-           const endTimeStampUnix = convertDateToUnixTimeStamp(endDate);
-          return {startTimeStampUnix,endTimeStampUnix};
-          }
+        //    const startTimeStampUnix = convertDateToUnixTimeStamp(startDate);
+        //    const endTimeStampUnix = convertDateToUnixTimeStamp(endDate);
+        //   return {startTimeStampUnix,endTimeStampUnix};
+        //   }
 
 
-          const updateChart =  async () =>{
-            try { 
-              const {startTimeStampUnix,endTimeStampUnix} = getRange();
-             const resolution = chartConfig[filter].resolution;
-             const result = await fetchHistoricalData(stockSymbol, resolution,startTimeStampUnix,endTimeStampUnix,);
-             setData(formatData(result)) 
+        //   const updateChart =  async () =>{
+        //     try { 
+        //       const {startTimeStampUnix,endTimeStampUnix} = getRange();
+        //      const resolution = chartConfig[filter].resolution;
+        //      const result = await fetchHistoricalData(stockSymbol, resolution,startTimeStampUnix,endTimeStampUnix,);
+        //      setData(formatData(result)) 
               
-            } catch (error) {
-              setData([]);
-              console.error(error)
-            }
-          };
-          updateChart();
-         },[ stockSymbol, filter]);
+        //     } catch (error) {
+        //       setData([]);
+        //       console.error(error)
+        //     }
+        //   };
+        //   updateChart();
+        //  },[ stockSymbol, filter]);
 
   return (
      <Cards>
@@ -65,7 +64,7 @@ const Chart = () => {
 
         </ul>
         <ResponsiveContainer>
-            <AreaChart data={data}>
+            <AreaChart data={formatData(data)}>
             <defs>
     <linearGradient id="chartcolor" x1="0" y1="0" x2="0" y2="1">
       <stop offset="5%" stopColor={darkMode ? "#312E81" : "rgb( 199, 210, 251 )"} stopOpacity={0.8}/>
@@ -78,7 +77,7 @@ const Chart = () => {
                  dataKey = 'value'
                  stroke = '#8884d8'
                  fillOpacity = {1}
-                 strokeWidth = {2}
+                 strokeWidth = {0.5}
                  fill='url(#chartcolor)'
                />
                <Tooltip contentStyle={ darkMode ?{ backgroundColor: "#111827"} : null}
